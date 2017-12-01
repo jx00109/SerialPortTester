@@ -238,12 +238,12 @@
             // 
             // tbReceivedData
             // 
-            this.tbReceivedData.Location = new System.Drawing.Point(6, 30);
+            this.tbReceivedData.Location = new System.Drawing.Point(12, 30);
             this.tbReceivedData.Multiline = true;
             this.tbReceivedData.Name = "tbReceivedData";
             this.tbReceivedData.ReadOnly = true;
             this.tbReceivedData.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
-            this.tbReceivedData.Size = new System.Drawing.Size(748, 231);
+            this.tbReceivedData.Size = new System.Drawing.Size(742, 231);
             this.tbReceivedData.TabIndex = 0;
             // 
             // MainForm

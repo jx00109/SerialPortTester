@@ -18,7 +18,9 @@ namespace ProtocolTester
         private SerialPort comm = new SerialPort();
 
         //测试用串口
-        private SerialPort tempPort = new SerialPort();
+        private static SerialPort tempPort = new SerialPort();
+
+        
 
         public MainForm()
         {
@@ -38,7 +40,6 @@ namespace ProtocolTester
             cbDatabits.SelectedIndex = 0;
             cbStopbits.SelectedIndex = 0;
 
-            Console.WriteLine(5 / 2);
 
         }
 
@@ -62,6 +63,11 @@ namespace ProtocolTester
                         cbBaudrate.Enabled = true;
                         cbDatabits.Enabled = true;
                         cbStopbits.Enabled = true;
+
+                        if (tempPort.IsOpen)
+                        {
+                            tempPort.Close();
+                        }
                     }
 
                 }
@@ -92,17 +98,8 @@ namespace ProtocolTester
                     comm.Open();
 
 
-                    //tempPort仅在测试时使用，实际操作中，发送和接受数据的同一个串口
-                    /*
-                    tempPort.PortName = "COM11";
-                    tempPort.BaudRate = 9600;
-                    tempPort.DataBits = 8;
-                    tempPort.StopBits = StopBits.One;
-
-                    tempPort.DataReceived += new SerialDataReceivedEventHandler(myReceiveHandler);
-
-                    tempPort.Open();
-                    */
+                    
+                    
 
                     if (comm.IsOpen)
                     {
@@ -113,6 +110,18 @@ namespace ProtocolTester
                         cbBaudrate.Enabled = false;
                         cbDatabits.Enabled = false;
                         cbStopbits.Enabled = false;
+
+                        tempPort.PortName = "COM3";
+                        tempPort.BaudRate = 9600;
+                        tempPort.DataBits = 8;
+                        tempPort.StopBits = StopBits.One;
+
+                        tempPort.DataReceived += new SerialDataReceivedEventHandler(myReceiveHandler);
+
+                        if (!tempPort.IsOpen)
+                        {
+                            tempPort.Open();
+                        }
 
                         Console.WriteLine(comm.PortName);
                         Console.WriteLine(comm.BaudRate);
@@ -133,7 +142,7 @@ namespace ProtocolTester
         {
             if (!comm.IsOpen)
             {
-                Utils.ShowWarning("请先选择串口！");
+                Utils.ShowWarning("请先打开串口！");
             }
             else
             {
@@ -182,7 +191,7 @@ namespace ProtocolTester
                 tempPort.Read(buffer, 0, buffer.Length);
 
                 String receivedData = Utils.Bytes2String(buffer);
-                this.tbReceivedData.AppendText(receivedData + " ");
+                this.tbReceivedData.AppendText(receivedData + "\r\n");
             }
         }
 
