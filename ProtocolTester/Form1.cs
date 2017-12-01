@@ -20,7 +20,8 @@ namespace ProtocolTester
         //测试用串口
         private static SerialPort tempPort = new SerialPort();
 
-        
+        //测试标志
+        private bool flag = true;
 
         public MainForm()
         {
@@ -41,13 +42,17 @@ namespace ProtocolTester
             cbStopbits.SelectedIndex = 0;
 
             //测试用临时端口
-            tempPort.PortName = "COM3";
-            tempPort.BaudRate = 9600;
-            tempPort.DataBits = 8;
-            tempPort.StopBits = StopBits.One;
+            if (flag)
+            {
+                tempPort.PortName = "COM3";
+                tempPort.BaudRate = 9600;
+                tempPort.DataBits = 8;
+                tempPort.StopBits = StopBits.One;
 
-            tempPort.DataReceived += new SerialDataReceivedEventHandler(myReceiveHandler);
+                tempPort.DataReceived += new SerialDataReceivedEventHandler(myReceiveHandler);
+            }
 
+            comm.DataReceived += new SerialDataReceivedEventHandler(myReceiveHandler);
 
         }
 
@@ -99,15 +104,9 @@ namespace ProtocolTester
                         default:
                             comm.StopBits = StopBits.None;
                             break;
-                    }
-
-                    comm.DataReceived += new SerialDataReceivedEventHandler(myReceiveHandler);
+                    }                   
 
                     comm.Open();
-
-
-                    
-                    
 
                     if (comm.IsOpen)
                     {
@@ -119,10 +118,11 @@ namespace ProtocolTester
                         cbDatabits.Enabled = false;
                         cbStopbits.Enabled = false;
 
+                        if (flag)
+                        {
+                            tempPort.Open();
+                        }
                         
-                        tempPort.Open();
-                        
-
                         Console.WriteLine(comm.PortName);
                         Console.WriteLine(comm.BaudRate);
                         Console.WriteLine(comm.DataBits);
@@ -186,12 +186,22 @@ namespace ProtocolTester
             }
             else
             {
-                //读取数据
-                byte[] buffer = new byte[tempPort.BytesToRead];
-                tempPort.Read(buffer, 0, buffer.Length);
+                if (flag)
+                {
+                    byte[] buffer = new byte[tempPort.BytesToRead];
+                    tempPort.Read(buffer, 0, buffer.Length);
 
-                String receivedData = Utils.Bytes2String(buffer);
-                this.tbReceivedData.AppendText(receivedData + "\r\n");
+                    String receivedData = Utils.Bytes2String(buffer);
+                    this.tbReceivedData.AppendText(receivedData + "\r\n");
+                }
+                else
+                {                    
+                    byte[] buffer = new byte[comm.BytesToRead];
+                    comm.Read(buffer, 0, buffer.Length);
+
+                    String receivedData = Utils.Bytes2String(buffer);
+                    this.tbReceivedData.AppendText(receivedData + "\r\n");
+                }
             }
         }
 
