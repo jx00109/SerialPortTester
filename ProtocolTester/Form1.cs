@@ -40,6 +40,14 @@ namespace ProtocolTester
             cbDatabits.SelectedIndex = 0;
             cbStopbits.SelectedIndex = 0;
 
+            //测试用临时端口
+            tempPort.PortName = "COM3";
+            tempPort.BaudRate = 9600;
+            tempPort.DataBits = 8;
+            tempPort.StopBits = StopBits.One;
+
+            tempPort.DataReceived += new SerialDataReceivedEventHandler(myReceiveHandler);
+
 
         }
 
@@ -111,17 +119,9 @@ namespace ProtocolTester
                         cbDatabits.Enabled = false;
                         cbStopbits.Enabled = false;
 
-                        tempPort.PortName = "COM3";
-                        tempPort.BaudRate = 9600;
-                        tempPort.DataBits = 8;
-                        tempPort.StopBits = StopBits.One;
-
-                        tempPort.DataReceived += new SerialDataReceivedEventHandler(myReceiveHandler);
-
-                        if (!tempPort.IsOpen)
-                        {
-                            tempPort.Open();
-                        }
+                        
+                        tempPort.Open();
+                        
 
                         Console.WriteLine(comm.PortName);
                         Console.WriteLine(comm.BaudRate);
